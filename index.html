@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Realm of Luminara — Fantasy (HTML Only)</title>
+  <style>
+    :root{
+      --bg-1:#071027;--bg-2:#0d2036;--accent:#8efbe1;--accent-2:#c68cff;--muted:rgba(255,255,255,0.85);--glass:rgba(255,255,255,0.04)
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+    body{background:linear-gradient(180deg,var(--bg-1),var(--bg-2));color:var(--muted);-webkit-font-smoothing:antialiased}
+    header{display:flex;justify-content:space-between;align-items:center;padding:24px 6%}
+    .brand{font-weight:700;letter-spacing:1px;font-family:Georgia,serif;color:var(--accent-2)}
+    nav a{color:var(--muted);text-decoration:none;margin-left:18px;font-weight:600}
+    .hero{min-height:72vh;display:flex;align-items:center;gap:36px;padding:32px 6%}
+    .left{flex:1;max-width:760px}
+    h1{font-family:Georgia,serif;font-size:44px;margin:6px 0;background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;color:transparent}
+    p.lead{color:rgba(255,255,255,0.78);line-height:1.6}
+    .cta{margin-top:18px}
+    .btn{display:inline-block;padding:10px 18px;border-radius:12px;border:none;font-weight:700;cursor:pointer}
+    .primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#06121d}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .right{flex:0 0 420px;display:flex;align-items:center;justify-content:center;position:relative}
+    .orb{width:300px;height:300px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(from 120deg, rgba(142,251,225,0.06), rgba(198,140,255,0.06));box-shadow:0 20px 80px rgba(140,100,255,0.12)}
+    .orb .mark{font-family:Georgia,serif;font-size:46px;color:rgba(255,255,255,0.9)}
+    canvas{position:absolute;inset:0;pointer-events:none}
+    .cards{display:flex;gap:14px;margin-top:22px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:14px;border-radius:10px;border:1px solid rgba(255,255,255,0.02)}
+    footer{padding:20px 6%;opacity:0.9;display:flex;justify-content:space-between}
+    @media(max-width:900px){.hero{flex-direction:column}.right{height:260px}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Luminara</div>
+    <nav>
+      <a href="#lore">Lore</a>
+      <a href="#features">Features</a>
+      <a href="#explore">Explore</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="left">
+        <h1>Selamat datang di Realm of Luminara</h1>
+        <p class="lead">Sebuah demo halaman HTML bertema fantasi. Tidak ada input gambar atau form upload — hanya markup, gaya, dan interaksi ringan yang sepenuhnya berada dalam file HTML ini.</p>
+        <div class="cta">
+          <button class="btn primary" onclick="document.getElementById('lore').scrollIntoView({behavior:'smooth'})">Jelajahi</button>
+          <button class="btn ghost" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Tentang</button>
+        </div>
+
+        <div class="cards">
+          <div class="card"><strong>Orb Magis</strong><div style="opacity:0.8;font-size:13px;margin-top:6px">Efek cahaya dan bayangan murni CSS/Canvas.</div></div>
+          <div class="card"><strong>Responsif</strong><div style="opacity:0.8;font-size:13px;margin-top:6px">Cocok untuk mobile dan desktop.</div></div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="orb" id="orb"><div class="mark">✦</div></div>
+        <canvas id="stars"></canvas>
+      </div>
+    </section>
+
+    <section id="lore" style="padding:28px 6%">
+      <h2 style="margin:0 0 8px;font-family:Georgia,serif">Lore Singkat</h2>
+      <p style="opacity:0.85;max-width:900px">Luminara menyimpan inti cahaya; orb purba menjaga keseimbangan malam dan siang. Halaman ini adalah mockup — bebas untuk dimodifikasi tanpa elemen upload gambar.</p>
+    </section>
+
+    <section id="features" style="padding:18px 6% 80px">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+        <div class="card"><strong>Animasi</strong><div style="opacity:0.85;font-size:13px;margin-top:6px">Animasi halus memakai requestAnimationFrame.</div></div>
+        <div class="card"><strong>Custom</strong><div style="opacity:0.85;font-size:13px;margin-top:6px">Ubah teks, warna, atau simbol orb dengan mudah.</div></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div>© 2025 Realm of Luminara</div>
+    <div style="opacity:0.9">Made with ✨</div>
+  </footer>
+
+  <script>
+    // Simple starfield inside canvas — no image inputs, purely drawn shapes
+    (function(){
+      const canvas = document.getElementById('stars');
+      const ctx = canvas.getContext('2d');
+      let w=0,h=0,stars=[];
+      function resize(){
+        const rect = canvas.getBoundingClientRect();
+        w = canvas.width = rect.width || canvas.clientWidth || window.innerWidth*0.3;
+        h = canvas.height = rect.height || canvas.clientHeight || 300;
+        init();
+      }
+      function rand(a,b){return Math.random()*(b-a)+a}
+      function init(){
+        stars=[]; const count = Math.round((w*h)/40000)+30;
+        for(let i=0;i<count;i++) stars.push({x:rand(0,w),y:rand(0,h),r:rand(0.6,2.2),a:rand(0.2,0.95)});
+      }
+      function draw(){
+        ctx.clearRect(0,0,w,h);
+        for(const s of stars){
+          ctx.globalAlpha = s.a;
+          ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fillStyle='rgba(142,251,225,0.06)'; ctx.fill();
+        }
+        requestAnimationFrame(draw);
+      }
+      window.addEventListener('resize', resize);
+      // ensure canvas sized relative to its container
+      const observer = new ResizeObserver(resize);
+      observer.observe(document.querySelector('.right'));
+      resize(); draw();
+
+      // Orb subtle pulse
+      const orb = document.getElementById('orb');
+      (function pulse(){
+        const t = performance.now()/1000;
+        const s = 1 + Math.sin(t*1.1)*0.035 + Math.sin(t*0.33)*0.015;
+        orb.style.transform = `scale(${s})`;
+        requestAnimationFrame(pulse);
+      })();
+    })();
+  </script>
+</body>
+</html>
